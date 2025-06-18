@@ -1,2 +1,2 @@
 [phases.start]
-cmds = ["python app.py"]
+cmds = ["python com/better/app.py"]
