@@ -1,8 +1,9 @@
 [phases.setup]
 nixPkgs = ["python311Full"]
 
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
+[env]
+NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
 
 [phases.start]
 cmds = ["gunicorn app:app"]
+
