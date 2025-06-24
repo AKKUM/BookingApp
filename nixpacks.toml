@@ -2,7 +2,7 @@
 nixPkgs = ["python311Full"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = ["pip install --upgrade pip", "pip install -r requirements.txt"]
 
 [phases.start]
-cmds = ["python -m gunicorn app:app"]
+cmds = ["gunicorn app:app"]
