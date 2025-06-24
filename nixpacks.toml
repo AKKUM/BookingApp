@@ -1,14 +1,16 @@
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv"]
+nixPkgs = ["python311", "python311Packages.pip"]
 
 [phases.install]
 cmds = [
-    "python -m venv /app/venv",
-    "/app/venv/bin/pip install --upgrade pip",
-    "/app/venv/bin/pip install -r requirements.txt"
+    "export PYTHONUSERBASE=/app/.local",
+    "pip install --user --upgrade pip",
+    "pip install --user -r requirements.txt"
 ]
 
 [phases.start]
 cmds = [
-    "/app/venv/bin/python -m gunicorn app:app"
+    "export PYTHONUSERBASE=/app/.local",
+    "export PATH=$PYTHONUSERBASE/bin:$PATH",
+    "python -m gunicorn app:app"
 ]
