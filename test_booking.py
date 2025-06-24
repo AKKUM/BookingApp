@@ -9,7 +9,7 @@ def test_booking_api():
         "username": "BET1868995",
         "password": "W3ek3ndw@rri0rs4",
         "initial_url": "https://bookings.better.org.uk/location/canons-leisure-centre",
-        "logged_in_url": "https://bookings.better.org.uk/location/canons-leisure-centre/badminton-40min/2025-06-22/by-time/slot/09:40-10:20",
+        "logged_in_url": "https://bookings.better.org.uk/location/canons-leisure-centre/badminton-40min/2025-06-30/by-time/slot/18:40-19:20",
         "court_number": "Court 3"
     }
 

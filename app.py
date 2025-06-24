@@ -1,5 +1,5 @@
 import os
-import time
+import time as time_module
 import json
 from datetime import datetime
 from selenium import webdriver
@@ -11,6 +11,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from flask import Flask, request, jsonify
+from datetime import datetime, time, timedelta
 import logging
 
 # Configure logging
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-class BetterBookingBot:
+class BookingService:
     def __init__(self):
         self.driver = None
         self.wait = None
@@ -54,17 +55,22 @@ class BetterBookingBot:
             self.accept_cookies()
             accept_cookies = self.driver.find_element(By.XPATH, "//*[@id='onetrust-accept-btn-handler']")
             accept_cookies.click()
-            time.sleep(2)
+            time_module.sleep(2)
 
             login_link = self.driver.find_element(By.XPATH, "//*[@id='root']/nav/div/div/ul/li[3]/button/span")
             login_link.click()
-            time.sleep(2)
+            time_module.sleep(2)
             # Wait for page to load
             login_popup = self.find_login_button()
             login_popup.find_element(By.XPATH, "//*[@id='username']").send_keys(username)
             login_popup.find_element(By.XPATH, "//*[@id='password']").send_keys(password)
             login_popup.find_element(By.XPATH, "/html/body/div[5]/div[3]/form/div[3]/button").click()
-            time.sleep(10)
+
+            #timeToWait = (milliseconds_until_10pm() - 10) / 1000
+            #print("what is time to wait", timeToWait)
+            #print("milliseconds _until 10PM", milliseconds_until_10pm())
+            #time_module.sleep(timeToWait)
+            time_module.sleep(10)
             self.driver.get(logged_in_url)
 
             booking_popup = self.find_booking_button()
@@ -204,6 +210,18 @@ class BetterBookingBot:
                 self.driver.quit()
 
 
+def milliseconds_until_10pm():
+    now = datetime.now()
+    ten_pm_today = datetime.combine(now.date(), time(22, 0))
+
+    if now < ten_pm_today:
+        delta = ten_pm_today - now
+    else:
+        ten_pm_tomorrow = ten_pm_today + timedelta(days=1)
+        delta = ten_pm_tomorrow - now
+
+    return int(delta.total_seconds() * 1000)  # Convert seconds to milliseconds
+
 
 # Flask API for Make.com integration
 @app.route('/book', methods=['POST'])
@@ -219,7 +237,7 @@ def book_court():
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         # Create bot instance and make booking
-        bot = BetterBookingBot()
+        bot = BookingService()
         result = bot.make_booking(booking_data)
 
         if result['success']:
